@@ -28,6 +28,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the scene to the view
 //        sceneView.scene = scene
+        addTapGestureToSceneView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,6 +71,25 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
+        
+    }
+    
+    func addTapGestureToSceneView() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.didTap(withGestureRecognizer: )))
+        sceneView.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    @objc func didTap(withGestureRecognizer recognizer: UIGestureRecognizer) {
+        let tapLocation = recognizer.location(in: sceneView)
+        
+        let hitTestResultsWithFeaturePoints = sceneView.hitTest(tapLocation, types: .featurePoint)
+        if let hitTestResultsWithFeaturePoints = hitTestResultsWithFeaturePoints.first {
+            print(hitTestResultsWithFeaturePoints.worldTransform.columns.3.x,
+                  hitTestResultsWithFeaturePoints.worldTransform.columns.3.y,
+                  hitTestResultsWithFeaturePoints.worldTransform.columns.3.z)
+        } else {
+            print("No feature points detected.")
+        }
         
     }
 }
