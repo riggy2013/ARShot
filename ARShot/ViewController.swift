@@ -29,6 +29,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Set the scene to the view
 //        sceneView.scene = scene
         addTapGestureToSceneView()
+        
+        addBall(x: 0, y: 0, z: -0.2)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -91,5 +93,24 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             print("No feature points detected.")
         }
         
+    }
+    
+    func addBall(x: Float = 0, y: Float = 0, z: Float = 0) {
+//        guard let frame = sceneView.session.currentFrame else { return }
+//        let camMatrix = SCNMatrix4(frame.camera.transform)
+//        let direction = SCNVector3Make(-camMatrix.m31 * 5.0, -camMatrix.m32 * 10.0, -camMatrix.m33 * 5.0)
+        
+        let ball = SCNSphere(radius: 0.01)
+        
+        let ballNode = SCNNode()
+        ballNode.geometry = ball
+        ballNode.position = SCNVector3(x, y, z)
+        ballNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+        ballNode.physicsBody?.categoryBitMask = 3
+        ballNode.physicsBody?.contactTestBitMask = 1
+        
+        sceneView.scene.rootNode.addChildNode(ballNode)
+        ballNode.runAction(SCNAction.sequence([SCNAction.wait(duration: 10.0), SCNAction.removeFromParentNode()]))
+//        ballNode.physicsBody?.applyForce(direction, asImpulse: true)
     }
 }
